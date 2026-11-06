@@ -1,0 +1,11 @@
+{{- with site.Params.imprint -}}
+<pre class="table">
+{{ .name }}
+{{ .street }}
+{{ .city }}{{ with .country }}
+{{ . }}{{ end }}
+
+{{ printf "%-9s" "e-mail" }}<a href="mailto:{{ site.Params.email }}">{{ site.Params.email }}</a>{{ with .phone }}
+{{ printf "%-9s" "tel" }}{{ . }}{{ end }}
+</pre>
+{{- end -}}

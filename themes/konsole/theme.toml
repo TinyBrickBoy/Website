@@ -1,0 +1,6 @@
+name = "Konsole"
+license = "MIT"
+description = "Terminal-Theme für Tech-Profile: Portfolio, Projekte und Blog im Look einer Shell."
+tags = ["portfolio", "terminal", "dark", "monospace", "deutsch"]
+features = ["Farbschemata grün/amber/eis", "Tipp-Effekt", "Projekte", "Blog", "Skills aus hugo.toml"]
+min_version = "0.120.0"

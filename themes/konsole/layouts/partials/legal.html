@@ -1,0 +1,4 @@
+<nav class="legal" aria-label="Legal">
+  {{- with index (where site.RegularPages "Params.legal" "imprint") 0 }}<a href="{{ .RelPermalink }}" data-legal="imprint">{{ i18n "linkImprint" }}</a>{{ end }}
+  {{- with index (where site.RegularPages "Params.legal" "privacy") 0 }}<a href="{{ .RelPermalink }}" data-legal="privacy">{{ i18n "linkPrivacy" }}</a>{{ end }}
+</nav>

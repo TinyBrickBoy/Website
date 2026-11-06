@@ -1,0 +1,8 @@
+{{ $s := site.Params }}
+<pre class="table">
+{{- with $s.email }}
+{{ printf "%-11s" "mail" }}<a href="mailto:{{ . }}">{{ . }}</a>{{ end }}
+{{- range $s.links }}
+{{ printf "%-11s" .label }}<a href="{{ .url }}">{{ .url | replaceRE "^https?://(www\\.)?" "" }}</a>
+{{- end }}
+</pre>

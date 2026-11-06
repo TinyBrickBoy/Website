@@ -1,0 +1,10 @@
+{{- /* Holt JSON von einer URL. Gibt nil zurück, wenn die Anfrage scheitert. */ -}}
+{{- $data := false -}}
+{{- with resources.GetRemote . (dict "headers" (dict "Accept" "application/json" "User-Agent" "hugo-konsole-theme")) -}}
+  {{- with .Err -}}
+    {{- warnf "stats: %s" . -}}
+  {{- else -}}
+    {{- $data = . | transform.Unmarshal -}}
+  {{- end -}}
+{{- end -}}
+{{- return $data -}}

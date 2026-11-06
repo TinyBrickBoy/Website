@@ -1,0 +1,197 @@
+baseURL = "/"
+relativeURLs = true
+title = "leo@tinybrickboy"
+theme = "konsole"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
+
+[params]
+  name = "Leo"
+  alias = "TinyBrickBoy"
+  handle = "leo"
+  host = "tinybrickboy"
+  os = "LEO-OS"
+  email = "leo@scherr.xyz"
+  logo = '''
+ _      _____ _____
+| |    |  ___|  _  |
+| |    | |__ | | | |
+| |    |  __|| | | |
+| |____| |___\ \_/ /
+\_____/\____/ \___/
+'''
+
+  # Eigenes Autonomes System – wird beim Build live von RIPEstat geholt, das hier ist der Rückfall
+  [params.asn]
+    number = 210881
+    holder = "LEO-SCHERR Leo Scherr"
+    since = "2021-08-19"
+    v4prefixes = 1
+    v4ips = 256
+    v6prefixes = 0
+    prefixes = ["85.93.5.0/24"]
+    v4seen = 322
+    v4total = 322
+    v6seen = 0
+    v6total = 313
+    upstreams = ["AS209874"]
+    geofeed = "https://github.com/TinyBrickBoy/geofeed"
+    rpki = "valid"
+    abuse = "abuse@scherr.xyz"
+    geo = "DE · Velbert"
+    geoPct = 99.6
+    pathAvg = 5.5
+    pathMin = 4
+    pathMax = 8
+    collectors = 23
+    histTotal = 27
+    histV4 = 2
+    histV6 = 25
+    histSince = "2021"
+    updates = [["2026-10-07", 85], ["2026-10-08", 89], ["2026-10-09", 67], ["2026-10-10", 1444], ["2026-10-11", 3114], ["2026-10-12", 80], ["2026-10-13", 138], ["2026-10-14", 148], ["2026-10-15", 4430], ["2026-10-16", 83], ["2026-10-17", 79], ["2026-10-18", 123], ["2026-10-19", 163], ["2026-10-20", 111], ["2026-10-21", 143], ["2026-10-22", 77], ["2026-10-23", 36], ["2026-10-24", 62], ["2026-10-25", 98], ["2026-10-26", 188], ["2026-10-27", 128], ["2026-10-28", 87], ["2026-10-29", 115], ["2026-10-30", 806], ["2026-10-31", 29], ["2026-11-01", 30], ["2026-11-02", 35], ["2026-11-03", 47], ["2026-11-04", 89], ["2026-11-05", 77]]
+
+  # Impressum (Pflicht nach § 5 DDG) – hoster noch eintragen
+  [params.imprint]
+    name = "Leo Scherr"
+    street = "Fedor-Sommer-Straße 1"
+    city = "46325 Borken"
+    country = "Deutschland"
+    phone = ""
+    hoster = "[Name und Anschrift deines Hosting-Anbieters]"
+    updated = "2026-11-06"
+
+  # Stats: werden beim Build live geholt, diese Werte sind nur der Rückfall
+  [params.stats.github]
+    user = "TinyBrickBoy"
+    repos = 57
+    forks = 33
+    stars = 17
+    followers = 12
+    since = "2022"
+    langs = [["HTML", 14], ["JavaScript", 9], ["Go", 4], ["Shell", 4], ["Java", 2], ["Svelte", 1]]
+  [params.stats.codeberg]
+    user = "TinyBrickBoy"
+    repos = 0
+    forks = 0
+    stars = 0
+    followers = 1
+    since = "2026"
+    langs = []
+
+  [[params.links]]
+    label = "github"
+    url = "https://github.com/TinyBrickBoy"
+  [[params.links]]
+    label = "codeberg"
+    url = "https://codeberg.org/TinyBrickBoy"
+  [[params.links]]
+    label = "website"
+    url = "https://tinybrickboy.github.io"
+  [[params.links]]
+    label = "onthepixel"
+    url = "https://onthepixel.net"
+  [[params.links]]
+    label = "steyon"
+    url = "https://steyon.dev"
+
+  [[params.skills]]
+    group = "lang"
+    items = ["Java", "Go", "JavaScript", "Node.js", "TypeScript", "Python", "Shell"]
+  [[params.skills]]
+    group = "infra"
+    items = ["Linux", "Docker", "Git", "WireGuard", "BGP / BIRD2", "Pterodactyl / Pelican"]
+  [[params.skills]]
+    group = "data"
+    items = ["PostgreSQL", "MySQL", "MongoDB"]
+  [[params.skills]]
+    group = "web"
+    items = ["Svelte", "Tailwind CSS"]
+  [[params.skills]]
+    group = "minecraft"
+    items = ["Paper / Velocity / BungeeCord", "Server networks", "Plugins"]
+
+[languages]
+  [languages.en]
+    languageCode = "en-US"
+    languageName = "English"
+    contentDir = "content/en"
+    weight = 1
+    [languages.en.params]
+      role = "Developer & System Administrator"
+      location = "Germany"
+      description = "I build backends, run servers and networks, and automate everything that runs more than twice. Mostly Go, Java and Node.js — made with <3 and beer."
+      status = "Working on OnThePixel.net, Steyon and localy.host"
+      contributions = "1,167 contributions in the last year"
+    [languages.en.params.research]
+      title = "security & ip research"
+      intro = "I run my own network, AS210881, and use it as a lab: how routes spread across the internet, how my prefixes are seen worldwide and what traffic actually hits a public IP range."
+      outro = "Found something odd in my range or want to talk research?"
+      [[languages.en.params.research.areas]]
+        name = "bgp & routing"
+        text = "announcing own prefixes, RPKI, upstreams and route visibility"
+        run = "asn"
+      [[languages.en.params.research.areas]]
+        name = "ip intelligence"
+        text = "geofeeds, whois/RDAP and the reputation of IP ranges"
+        url = "https://github.com/TinyBrickBoy/geofeed"
+      [[languages.en.params.research.areas]]
+        name = "network security"
+        text = "DDoS protection for game servers, packet filtering with XDP/eBPF, edge firewalls"
+      [[languages.en.params.research.areas]]
+        name = "tooling"
+        text = "my own tools for routing and monitoring"
+        run = "open bgp-router"
+
+  [languages.de]
+    languageCode = "de-DE"
+    languageName = "Deutsch"
+    contentDir = "content/de"
+    weight = 2
+    [languages.de.params]
+      role = "Entwickler & Systemadministrator"
+      location = "Deutschland"
+      description = "Ich baue Backends, betreibe Server und Netzwerke und automatisiere alles, was öfter als zweimal läuft. Meist in Go, Java und Node.js — made with <3 and beer."
+      status = "Arbeitet an OnThePixel.net, Steyon und localy.host"
+      contributions = "1.167 Beiträge im letzten Jahr"
+    [languages.de.params.research]
+      title = "security- & ip-recherche"
+      intro = "Ich betreibe mein eigenes Netz, AS210881, und nutze es als Labor: wie sich Routen im Internet verbreiten, wie meine Präfixe weltweit gesehen werden und welcher Traffic tatsächlich auf einem öffentlichen IP-Bereich ankommt."
+      outro = "Etwas Seltsames in meinem Netz gefunden oder Lust auf Austausch?"
+      [[languages.de.params.research.areas]]
+        name = "bgp & routing"
+        text = "eigene Präfixe announcen, RPKI, Upstreams und Sichtbarkeit von Routen"
+        run = "asn"
+      [[languages.de.params.research.areas]]
+        name = "ip-intelligence"
+        text = "Geofeeds, Whois/RDAP und die Reputation von IP-Bereichen"
+        url = "https://github.com/TinyBrickBoy/geofeed"
+      [[languages.de.params.research.areas]]
+        name = "netzsicherheit"
+        text = "DDoS-Schutz für Gameserver, Paketfilter mit XDP/eBPF, Firewalls am Netzrand"
+      [[languages.de.params.research.areas]]
+        name = "tooling"
+        text = "eigene Werkzeuge für Routing und Monitoring"
+        run = "open bgp-router"
+
+# Stats höchstens alle 6 Stunden neu von den APIs holen
+[caches.getresource]
+  dir = ":cacheDir/:project"
+  maxAge = "6h"
+
+[privacy]
+  [privacy.disqus]
+    disable = true
+  [privacy.googleAnalytics]
+    disable = true
+  [privacy.instagram]
+    disable = true
+  [privacy.vimeo]
+    disable = true
+  [privacy.youtube]
+    privacyEnhanced = true
+  [privacy.x]
+    disable = true
+
+[markup.highlight]
+  codeFences = false
