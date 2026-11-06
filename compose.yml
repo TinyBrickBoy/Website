@@ -1,20 +1,20 @@
+# Für Coolify (oder jedes andere Docker-Compose-Setup).
+# In Coolify: Domain der Ressource auf Port 8080 zeigen lassen, z. B. https://leo.example.org:8080
+# Die Variablen unten lassen sich in Coolify unter "Environment Variables" setzen.
 services:
   web:
     build: .
-    image: leo-site:latest
-    container_name: leo-site
     restart: unless-stopped
-    # Nur lokal erreichbar – davor ein Reverse-Proxy mit TLS (Caddy, nginx, Traefik …)
-    ports:
-      - "127.0.0.1:8080:8080"
+    expose:
+      - "8080"
     environment:
-      # Repo, aus dem sich der Container den neuesten Stand holt (öffentlich oder mit Token in der URL)
-      REPO_URL: "https://github.com/TinyBrickBoy/DEIN-REPO.git"
-      REPO_BRANCH: "main"
-      # Wie oft nach neuen Commits geschaut wird (Sekunden)
-      UPDATE_INTERVAL: "3600"
-      # Echte Adresse der Seite
-      BASE_URL: "https://example.org/"
+      # Optional: Container holt sich selbst neue Commits (z. B. die täglichen Stats).
+      # Leer lassen, wenn Coolify bei jedem Push automatisch neu deployt.
+      REPO_URL: "${REPO_URL:-}"
+      REPO_BRANCH: "${REPO_BRANCH:-main}"
+      UPDATE_INTERVAL: "${UPDATE_INTERVAL:-3600}"
+      # Echte Adresse der Seite, z. B. https://leo.example.org/
+      BASE_URL: "${BASE_URL:-}"
     read_only: true
     tmpfs:
       - /tmp
