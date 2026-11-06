@@ -58,7 +58,7 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
     city = "46325 Borken"
     country = "Deutschland"
     phone = ""
-    hoster = "[Name und Anschrift deines Hosting-Anbieters]"
+    hoster = "Skrime"
     updated = "2026-11-06"
 
   # Stats: werden beim Build live geholt, diese Werte sind nur der Rückfall
@@ -87,7 +87,7 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
     url = "https://codeberg.org/TinyBrickBoy"
   [[params.links]]
     label = "website"
-    url = "https://tinybrickboy.github.io"
+    url = "https://tinybrickboy.de"
   [[params.links]]
     label = "onthepixel"
     url = "https://onthepixel.net"
