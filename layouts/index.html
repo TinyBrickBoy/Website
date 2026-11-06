@@ -1,0 +1,98 @@
+{{ define "main" }}
+{{ $s := site.Params }}
+{{ $projects := (where site.RegularPages "Section" "projects").ByWeight }}
+{{ $posts := where site.RegularPages "Section" "posts" }}
+<div id="boot" class="boot" aria-hidden="true"></div>
+
+<div id="intro">
+  <pre class="logo" aria-label="{{ $s.name }}">{{ $s.logo | strings.TrimRight "\n " }}</pre>
+  <p class="bright">{{ $s.name }}{{ with $s.alias }} aka {{ . }}{{ end }} — {{ $s.role }}</p>
+  <p class="dim">{{ i18n "intro" | safeHTML }}
+    <a href="#" data-run="whoami">whoami</a>
+    <a href="#" data-run="projects">projects</a>
+    <a href="#" data-run="stats">stats</a>
+    <a href="#" data-run="research">research</a>
+    <a href="#" data-run="contact">contact</a>
+    <a href="#" data-run="language">language</a>
+  </p>
+</div>
+
+<div id="output" aria-live="polite"></div>
+
+<form id="prompt" class="prompt" autocomplete="off" hidden>
+  <label for="cmd">{{ partial "ps1.html" . }}</label>
+  <input id="cmd" name="cmd" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" enterkeyhint="send" aria-label="{{ i18n "inputLabel" }}">
+  <span class="cursor" aria-hidden="true"></span>
+</form>
+
+<noscript>
+  <p>[ <a href="{{ (site.GetPage "/projects").RelPermalink }}">projects</a> ]
+     [ <a href="{{ (site.GetPage "/contact").RelPermalink }}">contact</a> ]</p>
+</noscript>
+
+{{/* Command output – shown by konsole.js */}}
+<div hidden>
+<template data-cmd="help">
+<pre class="table">
+{{- $keys := dict "help" "cmdHelp" "ls" "cmdLs" "cat" "cmdCat" "whoami" "cmdWhoami" "skills" "cmdSkills" "stats" "cmdStats" "research" "cmdResearch" "asn" "cmdAsn" "projects" "cmdProjects" "blog" "cmdBlog" "contact" "cmdContact" "language" "cmdLanguage" "clear" "cmdClear" "imprint" "cmdImprint" "privacy" "cmdPrivacy" -}}
+{{- $order := slice "help" "ls" "cat" "whoami" "skills" "stats" "research" "asn" "projects" -}}
+{{- if $posts }}{{ $order = $order | append "blog" }}{{ end -}}
+{{- $order = $order | append "contact" "imprint" "privacy" "language" "clear" -}}
+{{- range $order }}
+<a href="#" data-run="{{ . }}">{{ . }}</a>{{ strings.Repeat (sub 11 (len .)) " " }}{{ i18n (index $keys .) }}
+{{- end }}
+</pre>
+<p class="dim">{{ i18n "tabHint" | safeHTML }}</p>
+</template>
+
+<template data-cmd="whoami">
+<p class="bright">{{ $s.name }}{{ with $s.alias }} aka {{ . }}{{ end }}</p>
+<p>{{ $s.role }} · {{ $s.location }}</p>
+<p>{{ $s.description }}</p>
+<p class="dim">status: {{ $s.status }}{{ with $s.contributions }} · {{ . }}{{ end }}</p>
+</template>
+
+<template data-cmd="skills">
+<pre class="table">
+{{- range $s.skills }}
+{{ printf "%-11s" .group }}{{ delimit .items " · " }}
+{{- end }}
+</pre>
+</template>
+
+<template data-cmd="projects">
+<div class="plist">
+{{- range $projects }}
+<a href="{{ .RelPermalink }}" data-slug="{{ .File.ContentBaseName }}">{{ .Title }}</a><span>{{ .Description }}</span>
+{{- end }}
+</div>
+<p class="dim">{{ i18n "openHint" | safeHTML }}</p>
+</template>
+
+{{ with $posts }}
+<template data-cmd="blog">
+<pre class="table">
+{{- range first 5 . }}
+<span class="dim">{{ .Date.Format "2006-01-02" }}</span>  <a href="{{ .RelPermalink }}" data-slug="{{ .File.ContentBaseName }}">{{ .Title }}</a>
+{{- end }}
+</pre>
+</template>
+{{ end }}
+
+<template data-cmd="stats">
+{{ partial "stats.html" . }}
+</template>
+
+<template data-cmd="research">
+{{ partial "research.html" . }}
+</template>
+
+<template data-cmd="asn">
+{{ partial "asn.html" . }}
+</template>
+
+<template data-cmd="contact">
+{{ partial "contact.html" . }}
+</template>
+</div>
+{{ end }}

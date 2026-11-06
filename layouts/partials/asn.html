@@ -1,0 +1,130 @@
+{{- /*
+  ASN-Übersicht, beim Build live von RIPEstat (stat.ripe.net) geholt.
+  Rückfallwerte stehen in hugo.toml unter [params.asn].
+*/ -}}
+{{- $c := site.Params.asn -}}
+{{- $as := printf "AS%v" $c.number -}}
+{{- $ripe := "https://stat.ripe.net/data/%s/data.json?resource=%s" -}}
+{{- $d := dict "holder" $c.holder "announced" true "since" $c.since "v4p" $c.v4prefixes "v4ips" $c.v4ips "v6p" $c.v6prefixes
+      "prefixes" $c.prefixes "v4seen" $c.v4seen "v4total" $c.v4total "v6seen" $c.v6seen "v6total" $c.v6total "upstreams" $c.upstreams
+      "abuse" $c.abuse "geo" $c.geo "geoPct" $c.geoPct "pathAvg" $c.pathAvg "pathMin" $c.pathMin "pathMax" $c.pathMax "collectors" $c.collectors
+      "histTotal" $c.histTotal "histV4" $c.histV4 "histV6" $c.histV6 "histSince" $c.histSince -}}
+
+{{- $rpki := dict -}}
+{{- $updates := slice -}}
+{{- $fetched := now.Format "2006-01-02" -}}
+{{- with site.Data.stats.asn -}}
+  {{- /* von scripts/update-data.py gespeichert */ -}}
+  {{- $d = merge $d . -}}
+  {{- $rpki = .rpki | default dict -}}
+  {{- range .updates }}{{ $updates = $updates | append (dict "d" .d "n" (int .n)) }}{{ end -}}
+  {{- $fetched = .fetched -}}
+{{- else -}}
+{{- /* Grunddaten */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "as-overview" $as) -}}
+  {{- $d = merge $d (dict "holder" .data.holder "announced" .data.announced) -}}
+{{- end -}}
+{{- with partial "stats/fetch.html" (printf $ripe "routing-status" $as) -}}
+  {{- with .data -}}
+  {{- $d = merge $d (dict "since" (substr .first_seen.time 0 10)
+        "v4p" .announced_space.v4.prefixes "v4ips" .announced_space.v4.ips "v6p" .announced_space.v6.prefixes
+        "v4seen" .visibility.v4.ris_peers_seeing "v4total" .visibility.v4.total_ris_peers
+        "v6seen" .visibility.v6.ris_peers_seeing "v6total" .visibility.v6.total_ris_peers) -}}
+  {{- end -}}
+{{- end -}}
+{{- with partial "stats/fetch.html" (printf $ripe "announced-prefixes" $as) -}}
+  {{- $p := slice }}{{ range .data.prefixes }}{{ $p = $p | append .prefix }}{{ end -}}
+  {{- if $p }}{{ $d = merge $d (dict "prefixes" $p) }}{{ end -}}
+{{- end -}}
+
+{{- /* RPKI je Präfix */ -}}
+{{- range $d.prefixes -}}
+  {{- $status := $c.rpki -}}
+  {{- with partial "stats/fetch.html" (printf "https://stat.ripe.net/data/rpki-validation/data.json?resource=%s&prefix=%s" $as .) }}{{ $status = .data.status }}{{ end -}}
+  {{- $rpki = merge $rpki (dict . $status) -}}
+{{- end -}}
+
+{{- /* Upstreams */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "asn-neighbours" $as) -}}
+  {{- $ups := slice -}}
+  {{- range first 5 (where .data.neighbours "type" "left") -}}
+    {{- $name := "" -}}
+    {{- with partial "stats/fetch.html" (printf $ripe "as-overview" (printf "AS%v" .asn)) }}{{ $name = .data.holder }}{{ end -}}
+    {{- $ups = $ups | append (printf "AS%v %s" .asn $name) -}}
+  {{- end -}}
+  {{- if $ups }}{{ $d = merge $d (dict "upstreams" $ups) }}{{ end -}}
+{{- end -}}
+
+{{- /* Abuse-Kontakt */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "abuse-contact-finder" $as) -}}
+  {{- with .data.abuse_contacts }}{{ $d = merge $d (dict "abuse" (index . 0)) }}{{ end -}}
+{{- end -}}
+
+{{- /* Geolokation (größter Anteil) */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "maxmind-geo-lite-announced-by-as" $as) -}}
+  {{- $best := dict "covered_percentage" 0 -}}
+  {{- range .data.located_resources }}{{ range .locations }}{{ if gt .covered_percentage $best.covered_percentage }}{{ $best = . }}{{ end }}{{ end }}{{ end -}}
+  {{- with $best.country }}{{ $d = merge $d (dict "geo" (printf "%s · %s" . $best.city) "geoPct" (div (math.Round (mul $best.covered_percentage 10)) 10.0)) }}{{ end -}}
+{{- end -}}
+
+{{- /* AS-Pfadlänge über alle RIS-Kollektoren */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "as-path-length" $as) -}}
+  {{- $sum := 0 }}{{ $cnt := 0 }}{{ $min := 99 }}{{ $max := 0 -}}
+  {{- range .data.stats }}{{ $sum = add $sum .stripped.sum }}{{ $cnt = add $cnt .count }}{{ $min = math.Min $min .stripped.min }}{{ $max = math.Max $max .stripped.max }}{{ end -}}
+  {{- if gt $cnt 0 }}{{ $d = merge $d (dict "pathAvg" (div (math.Round (mul (div (float $sum) $cnt) 10)) 10.0) "pathMin" (int $min) "pathMax" (int $max) "collectors" (len .data.stats)) }}{{ end -}}
+{{- end -}}
+
+{{- /* Historie: alle jemals announcten Präfixe */ -}}
+{{- with partial "stats/fetch.html" (printf $ripe "routing-history" $as) -}}
+  {{- $v4 := 0 }}{{ $v6 := 0 }}{{ $first := "9999" -}}
+  {{- range .data.by_origin }}{{ range .prefixes -}}
+    {{- if in .prefix ":" }}{{ $v6 = add $v6 1 }}{{ else }}{{ $v4 = add $v4 1 }}{{ end -}}
+    {{- range .timelines }}{{ if lt .starttime $first }}{{ $first = .starttime }}{{ end }}{{ end -}}
+  {{- end }}{{ end -}}
+  {{- if gt (add $v4 $v6) 0 }}{{ $d = merge $d (dict "histTotal" (add $v4 $v6) "histV4" $v4 "histV6" $v6 "histSince" (substr $first 0 4)) }}{{ end -}}
+{{- end -}}
+
+{{- /* BGP-Updates der letzten 30 Tage */ -}}
+{{- with partial "stats/fetch.html" (printf "https://stat.ripe.net/data/bgp-update-activity/data.json?resource=%s&starttime=%s&sampling_period=86400" $as ((now.AddDate 0 0 -30).Format "2006-01-02")) -}}
+  {{- range .data.updates }}{{ $updates = $updates | append (dict "d" (substr .starttime 0 10) "n" (int (add (.announcements | default 0) (.withdrawals | default 0)))) }}{{ end -}}
+{{- end -}}
+{{- if not $updates }}{{ range $c.updates }}{{ $updates = $updates | append (dict "d" (index . 0) "n" (int (index . 1))) }}{{ end }}{{ end -}}
+
+{{- end -}}
+
+{{- $pct := 0 }}{{ if gt (int $d.v4total) 0 }}{{ $pct = math.Round (mul 100 (div (float $d.v4seen) $d.v4total)) }}{{ end -}}
+{{- $w := "%-14s" -}}
+<pre class="table asn">
+<span class="bright">{{ $as }}</span>  {{ $d.holder }}
+  {{ printf $w (i18n "asnStatus") }}{{ if $d.announced }}{{ i18n "asnAnnounced" }}{{ else }}{{ i18n "asnNotAnnounced" }}{{ end }}
+  {{ printf $w (i18n "asnRegistry") }}RIPE NCC
+  {{ printf $w (i18n "asnSince") }}{{ $d.since }}
+  {{ printf $w "ipv4" }}{{ $d.v4p }} {{ cond (eq (int $d.v4p) 1) (i18n "asnPrefix") (i18n "asnPrefixes") }} · {{ lang.FormatNumber 0 $d.v4ips }} {{ i18n "asnIps" }}
+  {{ printf $w "ipv6" }}{{ $d.v6p }} {{ cond (eq (int $d.v6p) 1) (i18n "asnPrefix") (i18n "asnPrefixes") }}
+{{- range $i, $p := $d.prefixes }}
+  {{ printf $w (cond (eq $i 0) (i18n "asnRoutes") "") }}{{ printf "%-18s" $p }}<span class="dim">rpki</span> {{ with index $rpki $p }}{{ if eq . "valid" }}✓ valid{{ else }}✗ {{ . }}{{ end }}{{ end }}
+{{- end }}
+  {{ printf $w (i18n "asnVisibility") }}v4 {{ $d.v4seen }}/{{ $d.v4total }} RIS peers ({{ $pct }}%){{ if gt (int $d.v6seen) 0 }} · v6 {{ $d.v6seen }}/{{ $d.v6total }}{{ end }}
+{{- range $i, $u := $d.upstreams }}
+  {{ printf $w (cond (eq $i 0) (i18n "asnUpstream") "") }}{{ $u }}
+{{- end }}
+  {{ printf $w (i18n "asnPath") }}Ø {{ lang.FormatNumber 1 $d.pathAvg }} {{ i18n "asnHops" }} <span class="dim">({{ $d.pathMin }}–{{ $d.pathMax }}, {{ $d.collectors }} {{ i18n "asnCollectors" }})</span>
+  {{ printf $w (i18n "asnGeo") }}{{ $d.geo }} <span class="dim">({{ lang.FormatNumber 1 $d.geoPct }} %)</span>
+  {{ printf $w (i18n "asnHistory") }}{{ $d.histTotal }} {{ i18n "asnPrefixes" }} {{ i18n "asnSinceYear" }} {{ $d.histSince }} <span class="dim">(v4 {{ $d.histV4 }} · v6 {{ $d.histV6 }})</span>
+  {{ printf $w "abuse" }}{{ with $d.abuse }}<a href="mailto:{{ . }}">{{ . }}</a>{{ end }}
+</pre>
+{{- with $updates }}
+{{- $total := 0 }}{{ $peak := dict "n" 0 "d" "" }}{{ range . }}{{ $total = add $total .n }}{{ if gt .n $peak.n }}{{ $peak = . }}{{ end }}{{ end }}
+{{- $sqMax := math.Sqrt (float (math.Max $peak.n 1)) }}
+<p class="asn-sub">{{ i18n "asnUpdates" }} <span class="dim">({{ i18n "asnLast30" }})</span></p>
+<div class="spark" role="img" aria-label="{{ $total }} BGP updates">
+  {{- range . }}
+  {{- $h := 4 }}{{ if gt .n 0 }}{{ $h = math.Max 4 (math.Round (mul 100 (div (math.Sqrt (float .n)) $sqMax))) }}{{ end }}
+  <i style="height: {{ $h }}%" title="{{ .d }}: {{ .n }} updates"></i>
+  {{- end }}
+</div>
+<p class="dim asn-sub">{{ lang.FormatNumber 0 $total }} updates · {{ i18n "asnPeak" }} {{ lang.FormatNumber 0 $peak.n }} {{ i18n "asnOn" }} {{ $peak.d }} · {{ i18n "asnLogScale" }}</p>
+{{- end }}
+{{- $num := $c.number }}
+<p class="asn-links">[ <a href="https://bgp.tools/as/{{ $num }}">bgp.tools</a> ] [ <a href="https://stat.ripe.net/{{ $as }}">ripestat</a> ] [ <a href="https://bgp.he.net/{{ $as }}">he.net</a> ]{{ with $c.geofeed }} [ <a href="{{ . }}">geofeed</a> ]{{ end }}</p>
+<p class="dim">{{ i18n "asnSource" }} · {{ i18n "statUpdated" }}: {{ $fetched }}</p>

@@ -1,0 +1,13 @@
+{{- /* Holt JSON von einer URL. Gibt nil zurück, wenn die Anfrage scheitert. */ -}}
+{{- $data := false -}}
+{{- $headers := dict "Accept" "application/json" "User-Agent" "hugo-konsole-theme" -}}
+{{- /* Optionaler Token gegen das GitHub-Rate-Limit (z. B. in GitHub Actions) */ -}}
+{{- with os.Getenv "HUGO_GITHUB_TOKEN" }}{{ if hasPrefix $ "https://api.github.com/" }}{{ $headers = merge $headers (dict "Authorization" (printf "Bearer %s" .)) }}{{ end }}{{ end -}}
+{{- with resources.GetRemote . (dict "headers" $headers) -}}
+  {{- with .Err -}}
+    {{- warnf "stats: %s" . -}}
+  {{- else -}}
+    {{- $data = . | transform.Unmarshal -}}
+  {{- end -}}
+{{- end -}}
+{{- return $data -}}

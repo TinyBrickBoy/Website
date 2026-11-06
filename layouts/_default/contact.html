@@ -1,0 +1,6 @@
+{{ define "main" }}
+<p>{{ partial "ps1.html" . }} contact</p>
+{{ with .Description }}<p>{{ . }}</p>{{ end }}
+{{ partial "contact.html" . }}
+{{ partial "back.html" . }}
+{{ end }}

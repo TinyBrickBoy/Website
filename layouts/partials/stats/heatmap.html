@@ -1,0 +1,27 @@
+{{- /* Beitragsraster wie bei GitHub: Spalten = Wochen (So–Sa), Helligkeit = Anzahl */ -}}
+{{- $days := .days -}}
+{{- with $days -}}
+{{- $first := time (index . 0).d -}}
+{{- $offset := int $first.Weekday -}}
+{{- $weeks := int (math.Ceil (div (float (add (len .) $offset)) 7)) -}}
+<div class="heat-wrap" role="img" aria-label="{{ $.total }} {{ i18n "contributions" }}">
+  <div class="heat" style="--weeks: {{ $weeks }}">
+    <div class="heat-months">
+      {{- range $i, $d := . -}}
+        {{- $t := time $d.d -}}
+        {{- if and (eq $t.Day 1) (lt (add $i $offset) (sub (mul $weeks 7) 14)) -}}
+        <span style="grid-column: {{ add (div (add $i $offset) 7) 1 }}">{{ $t | time.Format "Jan" | lower }}</span>
+        {{- end -}}
+      {{- end -}}
+    </div>
+    <div class="heat-days" aria-hidden="true"><span></span><span>{{ i18n "dayMon" }}</span><span></span><span>{{ i18n "dayWed" }}</span><span></span><span>{{ i18n "dayFri" }}</span><span></span></div>
+    <div class="heat-grid">
+      {{- if gt $offset 0 }}{{ range seq $offset }}<i class="e"></i>{{ end }}{{ end -}}
+      {{- range . -}}
+      <i class="l{{ .l }}" title="{{ .n }} {{ i18n "contributionsOn" }} {{ .d }}"></i>
+      {{- end -}}
+    </div>
+  </div>
+</div>
+<p class="heat-legend dim">{{ $.total }} {{ i18n "contributions" }}{{ with $.range }} {{ . }}{{ end }} · {{ i18n "less" }} <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> {{ i18n "more" }}</p>
+{{- end -}}

@@ -1,0 +1,29 @@
+{{- $platforms := slice -}}
+{{- with site.Params.stats.github }}{{ $platforms = $platforms | append (dict "kind" "github" "host" "github.com" "data" (partial "stats/collect.html" (dict "kind" "github" "conf" .))) }}{{ end -}}
+{{- with site.Params.stats.codeberg }}{{ $platforms = $platforms | append (dict "kind" "codeberg" "host" "codeberg.org" "data" (partial "stats/collect.html" (dict "kind" "codeberg" "conf" .))) }}{{ end -}}
+{{- range $platforms }}
+{{- $d := .data }}
+<pre class="table stats">
+<a href="https://{{ .host }}/{{ $d.user }}" class="bright">{{ .host }}/{{ $d.user }}</a>
+  {{ printf "%-11s" (i18n "statRepos") }}{{ $d.repos }}{{ with $d.forks }}  <span class="dim">(+{{ . }} {{ i18n "statForks" }})</span>{{ end }}
+  {{ printf "%-11s" (i18n "statStars") }}{{ $d.stars }}
+  {{ printf "%-11s" (i18n "statFollowers") }}{{ $d.followers }}
+  {{ printf "%-11s" (i18n "statSince") }}{{ $d.since }}
+{{- with $d.langs }}
+{{- $max := 1 }}{{ range . }}{{ $max = math.Max $max (index . 1) }}{{ end }}
+  {{ i18n "statLangs" }}
+{{- range . }}
+{{- $n := index . 1 }}
+{{- $bar := int (math.Ceil (div (mul (float $n) 18) $max)) }}
+    {{ printf "%-12s" (index . 0) }}{{ strings.Repeat $bar "#" }}<span class="dim">{{ strings.Repeat (sub 18 $bar) "." }}</span> {{ $n }}
+{{- end }}
+{{- end }}
+</pre>
+{{- $c := partial "stats/contrib.html" (dict "kind" .kind "user" $d.user) }}
+{{- if gt $c.total 0 }}
+{{ partial "stats/heatmap.html" (dict "days" $c.days "total" $c.total "range" (i18n "inLastYear")) }}
+{{- else }}
+<p class="dim heat-none">{{ i18n "noContrib" }}</p>
+{{- end }}
+{{- end }}
+<p class="dim">{{ i18n "statUpdated" }}: {{ with site.Data.stats.github }}{{ .fetched }}{{ else }}{{ now.Format "2006-01-02" }}{{ end }}</p>

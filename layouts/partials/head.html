@@ -1,0 +1,10 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>{{ if .IsHome }}{{ site.Params.name }}{{ with site.Params.alias }} ({{ . }}){{ end }} – {{ site.Params.role }}{{ else }}{{ .Title }} · {{ site.Params.name }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}">
+{{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+{{ end -}}
+<link rel="preload" href="{{ "fonts/vt323-latin-400-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+{{ $css := resources.Get "css/konsole.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">

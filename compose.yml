@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    image: leo-site:latest
+    container_name: leo-site
+    restart: unless-stopped
+    # Nur lokal erreichbar – davor ein Reverse-Proxy mit TLS (Caddy, nginx, Traefik …)
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      # Repo, aus dem sich der Container den neuesten Stand holt (öffentlich oder mit Token in der URL)
+      REPO_URL: "https://github.com/TinyBrickBoy/DEIN-REPO.git"
+      REPO_BRANCH: "main"
+      # Wie oft nach neuen Commits geschaut wird (Sekunden)
+      UPDATE_INTERVAL: "3600"
+      # Echte Adresse der Seite
+      BASE_URL: "https://example.org/"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/lib/site:uid=10001,gid=10001,mode=0755
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true

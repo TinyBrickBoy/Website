@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="{{ site.Language.Lang }}">
+<head>
+  {{ partial "head.html" . }}
+</head>
+<body class="{{ if .IsHome }}home{{ else }}page{{ end }}">
+  <div class="crt">
+    <div class="screen">
+      <div class="glass" id="glass">
+        <header class="topline">
+          <a href="{{ site.Home.RelPermalink }}">{{ site.Params.os | default "TERM" }}</a>
+          <div class="topright">
+            {{ partial "legal.html" . }}
+            {{ partial "langswitch.html" . }}
+          </div>
+        </header>
+        <main id="inhalt">
+          {{ block "main" . }}{{ end }}
+        </main>
+      </div>
+    </div>
+  </div>
+  {{ partial "i18n-json.html" . }}
+  {{ $js := resources.Get "js/konsole.js" | minify | fingerprint }}
+  <script src="{{ $js.RelPermalink }}"></script>
+</body>
+</html>
