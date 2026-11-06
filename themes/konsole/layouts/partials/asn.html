@@ -10,6 +10,16 @@
       "abuse" $c.abuse "geo" $c.geo "geoPct" $c.geoPct "pathAvg" $c.pathAvg "pathMin" $c.pathMin "pathMax" $c.pathMax "collectors" $c.collectors
       "histTotal" $c.histTotal "histV4" $c.histV4 "histV6" $c.histV6 "histSince" $c.histSince -}}
 
+{{- $rpki := dict -}}
+{{- $updates := slice -}}
+{{- $fetched := now.Format "2006-01-02" -}}
+{{- with site.Data.stats.asn -}}
+  {{- /* von scripts/update-data.py gespeichert */ -}}
+  {{- $d = merge $d . -}}
+  {{- $rpki = .rpki | default dict -}}
+  {{- range .updates }}{{ $updates = $updates | append (dict "d" .d "n" (int .n)) }}{{ end -}}
+  {{- $fetched = .fetched -}}
+{{- else -}}
 {{- /* Grunddaten */ -}}
 {{- with partial "stats/fetch.html" (printf $ripe "as-overview" $as) -}}
   {{- $d = merge $d (dict "holder" .data.holder "announced" .data.announced) -}}
@@ -28,7 +38,6 @@
 {{- end -}}
 
 {{- /* RPKI je Präfix */ -}}
-{{- $rpki := dict -}}
 {{- range $d.prefixes -}}
   {{- $status := $c.rpki -}}
   {{- with partial "stats/fetch.html" (printf "https://stat.ripe.net/data/rpki-validation/data.json?resource=%s&prefix=%s" $as .) }}{{ $status = .data.status }}{{ end -}}
@@ -76,11 +85,12 @@
 {{- end -}}
 
 {{- /* BGP-Updates der letzten 30 Tage */ -}}
-{{- $updates := slice -}}
 {{- with partial "stats/fetch.html" (printf "https://stat.ripe.net/data/bgp-update-activity/data.json?resource=%s&starttime=%s&sampling_period=86400" $as ((now.AddDate 0 0 -30).Format "2006-01-02")) -}}
   {{- range .data.updates }}{{ $updates = $updates | append (dict "d" (substr .starttime 0 10) "n" (int (add (.announcements | default 0) (.withdrawals | default 0)))) }}{{ end -}}
 {{- end -}}
 {{- if not $updates }}{{ range $c.updates }}{{ $updates = $updates | append (dict "d" (index . 0) "n" (int (index . 1))) }}{{ end }}{{ end -}}
+
+{{- end -}}
 
 {{- $pct := 0 }}{{ if gt (int $d.v4total) 0 }}{{ $pct = math.Round (mul 100 (div (float $d.v4seen) $d.v4total)) }}{{ end -}}
 {{- $w := "%-14s" -}}
@@ -117,4 +127,4 @@
 {{- end }}
 {{- $num := $c.number }}
 <p class="asn-links">[ <a href="https://bgp.tools/as/{{ $num }}">bgp.tools</a> ] [ <a href="https://stat.ripe.net/{{ $as }}">ripestat</a> ] [ <a href="https://bgp.he.net/{{ $as }}">he.net</a> ]{{ with $c.geofeed }} [ <a href="{{ . }}">geofeed</a> ]{{ end }}</p>
-<p class="dim">{{ i18n "asnSource" }} · {{ i18n "statUpdated" }}: {{ now.Format "2006-01-02" }}</p>
+<p class="dim">{{ i18n "asnSource" }} · {{ i18n "statUpdated" }}: {{ $fetched }}</p>

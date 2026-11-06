@@ -26,4 +26,4 @@
 <p class="dim heat-none">{{ i18n "noContrib" }}</p>
 {{- end }}
 {{- end }}
-<p class="dim">{{ i18n "statUpdated" }}: {{ now.Format "2006-01-02" }}</p>
+<p class="dim">{{ i18n "statUpdated" }}: {{ with site.Data.stats.github }}{{ .fetched }}{{ else }}{{ now.Format "2006-01-02" }}{{ end }}</p>

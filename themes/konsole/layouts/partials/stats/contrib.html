@@ -9,7 +9,10 @@
 {{- $live := false -}}
 {{- $hdr := dict "headers" (dict "User-Agent" "hugo-konsole-theme") -}}
 
-{{- if eq .kind "github" -}}
+{{- $file := index (site.Data.contributions | default dict) .kind -}}
+{{- if $file -}}
+  {{- range $file.days }}{{ $days = $days | append (dict "d" (index . 0) "n" (int (index . 1)) "l" (int (index . 2))) }}{{ end -}}
+{{- else if eq .kind "github" -}}
   {{- with resources.GetRemote (printf "https://github.com/users/%s/contributions" .user) $hdr -}}
     {{- with .Err }}{{ warnf "contrib: %s" . }}{{ else -}}
       {{- $html := .Content -}}
@@ -24,7 +27,6 @@
       {{- if $days }}{{ $live = true }}{{ end -}}
     {{- end -}}
   {{- end -}}
-  {{- if not $days }}{{ with site.Data.contributions.github }}{{ range .days }}{{ $days = $days | append (dict "d" (index . 0) "n" (int (index . 1)) "l" (int (index . 2))) }}{{ end }}{{ end }}{{ end -}}
 {{- else -}}
   {{- $perDay := dict -}}
   {{- with resources.GetRemote (printf "https://codeberg.org/api/v1/users/%s/heatmap" .user) $hdr -}}
