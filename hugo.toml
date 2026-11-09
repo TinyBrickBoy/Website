@@ -1,13 +1,17 @@
 baseURL = "/"
 relativeURLs = true
 title = "leo@tinybrickboy"
-theme = "konsole"
+theme = "bento"  # altes Terminal-Design: "konsole"
 defaultContentLanguage = "en"
 defaultContentLanguageInSubdir = false
 disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
 
 [params]
   name = "Leo"
+  fullname = "Leo Scherr"
+  initials = "LS"
+  # Werkzeuge-Kachel im Bento-Design
+  tools = ["Git", "Docker", "WireGuard", "BIRD2", "Pterodactyl", "Pelican", "Nextcloud", "Tailwind"]
   alias = "TinyBrickBoy"
   handle = "leo"
   host = "tinybrickboy"
@@ -79,21 +83,29 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
     since = "2026"
     langs = []
 
+  # primary = als Button in der Kontakt-Kachel, sonst als kleiner Link darunter
   [[params.links]]
     label = "github"
+    name = "GitHub"
     url = "https://github.com/TinyBrickBoy"
+    primary = true
   [[params.links]]
     label = "codeberg"
+    name = "Codeberg"
     url = "https://codeberg.org/TinyBrickBoy"
-  [[params.links]]
-    label = "website"
-    url = "https://tinybrickboy.de"
+    primary = true
   [[params.links]]
     label = "onthepixel"
+    name = "OnThePixel.net"
     url = "https://onthepixel.net"
   [[params.links]]
     label = "steyon"
+    name = "Steyon"
     url = "https://steyon.dev"
+  [[params.links]]
+    label = "website"
+    name = "tinybrickboy.de"
+    url = "https://tinybrickboy.de"
 
   [[params.skills]]
     group = "lang"
@@ -123,6 +135,37 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
       description = "I build backends, run servers and networks, and automate everything that runs more than twice. Mostly Go, Java and Node.js — made with <3 and beer."
       status = "Working on OnThePixel.net, Steyon and localy.host"
       contributions = "1,167 contributions in the last year"
+      # ---- Bento-Design ----
+      lead = "I build backends, run servers and networks and automate everything that runs more than twice. Mostly with Go, Java and Node.js."
+      about = "I'm Leo from Germany, developer and system administrator. I build backends and tools, take care of server infrastructure and run my own network. Made with <3 and beer."
+      typed = ["I build backends.", "I run servers and networks.", "I automate what repeats."]
+      asnText = "My lab for BGP and routing: own IPv4 and IPv6 prefixes, RPKI, upstreams and DDoS protection with XDP/eBPF."
+      [languages.en.params.skillMain]
+        label = "Main language"
+        name = "Go"
+        level = 90
+        desc = "Fast APIs, CLI tools and desktop helpers – for example mcskin-api and slime-buddy."
+      [[languages.en.params.skillbars]]
+        name = "Java"
+        level = 80
+        desc = "Server software, Paper/Velocity plugins"
+      [[languages.en.params.skillbars]]
+        name = "JavaScript / Node.js"
+        level = 85
+        desc = "Web apps, bots, tools"
+      [[languages.en.params.skillbars]]
+        name = "Linux & Docker"
+        level = 90
+        desc = "Running servers, containers"
+      [[languages.en.params.skillbars]]
+        name = "Networking"
+        level = 80
+        desc = "BGP, WireGuard, XDP/eBPF"
+      [[languages.en.params.skillbars]]
+        name = "Databases"
+        level = 75
+        desc = "MongoDB, MySQL, PostgreSQL"
+        wide = true
     [languages.en.params.research]
       title = "security & ip research"
       intro = "I run my own network, AS210881, and use it as a lab: how routes spread across the internet, how my prefixes are seen worldwide and what traffic actually hits a public IP range."
@@ -149,11 +192,42 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
     contentDir = "content/de"
     weight = 2
     [languages.de.params]
-      role = "Entwickler & Systemadministrator"
+      role = "Developer & System Administrator"
       location = "Deutschland"
       description = "Ich baue Backends, betreibe Server und Netzwerke und automatisiere alles, was öfter als zweimal läuft. Meist in Go, Java und Node.js — made with <3 and beer."
       status = "Arbeitet an OnThePixel.net, Steyon und localy.host"
       contributions = "1.167 Beiträge im letzten Jahr"
+      # ---- Bento-Design ----
+      lead = "Ich baue Backends, betreibe Server und Netzwerke und automatisiere alles, was öfter als zweimal läuft. Meistens mit Go, Java und Node.js."
+      about = "Ich bin Leo aus Deutschland, Entwickler und Systemadministrator. Ich entwickle Backends und Tools, kümmere mich um Server-Infrastruktur und betreibe mein eigenes Netzwerk. Gebaut mit <3 und Bier."
+      typed = ["Ich baue Backends.", "Ich betreibe Server und Netzwerke.", "Ich automatisiere, was sich wiederholt."]
+      asnText = "Mein Labor für BGP und Routing: eigene IPv4- und IPv6-Präfixe, RPKI, Upstreams und DDoS-Schutz mit XDP/eBPF."
+      [languages.de.params.skillMain]
+        label = "Hauptsprache"
+        name = "Go"
+        level = 90
+        desc = "Schnelle APIs, CLI-Tools und Desktop-Helfer – zum Beispiel mcskin-api und slime-buddy."
+      [[languages.de.params.skillbars]]
+        name = "Java"
+        level = 80
+        desc = "Server-Software, Paper/Velocity-Plugins"
+      [[languages.de.params.skillbars]]
+        name = "JavaScript / Node.js"
+        level = 85
+        desc = "Web-Apps, Bots, Tools"
+      [[languages.de.params.skillbars]]
+        name = "Linux & Docker"
+        level = 90
+        desc = "Server-Betrieb, Container"
+      [[languages.de.params.skillbars]]
+        name = "Netzwerk"
+        level = 80
+        desc = "BGP, WireGuard, XDP/eBPF"
+      [[languages.de.params.skillbars]]
+        name = "Datenbanken"
+        level = 75
+        desc = "MongoDB, MySQL, PostgreSQL"
+        wide = true
     [languages.de.params.research]
       title = "security- & ip-recherche"
       intro = "Ich betreibe mein eigenes Netz, AS210881, und nutze es als Labor: wie sich Routen im Internet verbreiten, wie meine Präfixe weltweit gesehen werden und welcher Traffic tatsächlich auf einem öffentlichen IP-Bereich ankommt."

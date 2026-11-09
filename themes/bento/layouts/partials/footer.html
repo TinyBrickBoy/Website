@@ -1,0 +1,7 @@
+<footer class="footer">
+  <span>© {{ now.Year }} {{ site.Params.fullname | default site.Params.name }}
+    {{- with index (where site.RegularPages "Params.legal" "imprint") 0 }} · <a href="{{ .RelPermalink }}">{{ i18n "linkImprint" }}</a>{{ end }}
+    {{- with index (where site.RegularPages "Params.legal" "privacy") 0 }} · <a href="{{ .RelPermalink }}">{{ i18n "linkPrivacy" }}</a>{{ end }}
+  </span>
+  <a href="#top">{{ i18n "toTop" }}</a>
+</footer>

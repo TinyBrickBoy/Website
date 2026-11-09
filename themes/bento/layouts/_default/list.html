@@ -1,0 +1,18 @@
+{{ define "main" }}
+<section class="page-top">
+  <h1 class="section-title">{{ if eq .Section "projects" }}{{ i18n "navProjects" }}{{ else }}{{ .Title | humanize }}{{ end }}</h1>
+  {{ if eq .Section "projects" }}
+    {{ partial "projects.html" . }}
+  {{ else }}
+  <div class="bento bento-4">
+    {{ range .Pages }}
+    <a href="{{ .RelPermalink }}" class="tile project p-wide">
+      <p class="project-title">{{ .Title }}</p>
+      {{ with .Description }}<p class="project-desc">{{ . }}</p>{{ end }}
+      {{ if eq .Section "posts" }}<p class="small">{{ .Date.Format "2006-01-02" }}</p>{{ end }}
+    </a>
+    {{ end }}
+  </div>
+  {{ end }}
+</section>
+{{ end }}

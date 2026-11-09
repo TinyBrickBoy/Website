@@ -1,0 +1,14 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>{{ if .IsHome }}{{ site.Params.name }}{{ with site.Params.alias }} ({{ . }}){{ end }} – {{ site.Params.role }}{{ else }}{{ .Title | humanize }} · {{ site.Params.fullname | default site.Params.name }}{{ end }}</title>
+<meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ site.Params.description }}{{ end }}">
+{{ range .AllTranslations }}<link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+{{ end -}}
+<link rel="preload" href="{{ "fonts/outfit-latin-wght-normal.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+{{- /* Setzt Hell/Dunkel vor dem ersten Zeichnen, damit nichts aufblitzt */}}
+{{ $theme := resources.Get "js/theme.js" | minify | fingerprint }}
+<script src="{{ $theme.RelPermalink }}"></script>
+{{ $css := resources.Get "css/bento.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">

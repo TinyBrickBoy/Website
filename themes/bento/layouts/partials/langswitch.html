@@ -1,0 +1,13 @@
+{{- $page := . -}}
+{{- range site.Languages }}
+  {{- $lang := .Lang }}
+  {{- $name := .LanguageName | default $lang }}
+  {{- if ne $lang site.Language.Lang }}
+    {{- $target := "" }}
+    {{- range $page.Translations }}{{ if eq .Language.Lang $lang }}{{ $target = .RelPermalink }}{{ end }}{{ end }}
+    {{- if not $target }}{{ range site.Home.Translations }}{{ if eq .Language.Lang $lang }}{{ $target = .RelPermalink }}{{ end }}{{ end }}{{ end }}
+    {{- with $target }}
+<a href="{{ . }}" hreflang="{{ $lang }}" class="icon-btn lang-btn" title="{{ $name }}" aria-label="{{ $name }}">{{ $lang | upper }}</a>
+    {{- end }}
+  {{- end }}
+{{- end -}}
