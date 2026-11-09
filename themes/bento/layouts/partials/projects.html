@@ -1,0 +1,21 @@
+{{- /* Projekt-Kacheln aus content/<lang>/projects. Größe per Front Matter: size = "big" | "wide" | "full" */ -}}
+<div class="bento bento-4 projects">
+{{- range (where site.RegularPages "Section" "projects").ByWeight }}
+  {{- $size := .Params.size | default "" }}
+  {{- $big := eq $size "big" }}
+  <a href="{{ .RelPermalink }}" class="tile project{{ with $size }} p-{{ . }}{{ end }}">
+    {{- if and $big .Params.demo }}
+    <div class="demo"><pre>
+      {{- range $i, $line := .Params.demo }}{{ if $i }}
+{{ end }}{{ $line | safeHTML }}{{ end -}}
+    </pre></div>
+    {{- end }}
+    <p class="project-title">{{ .Title }}</p>
+    <p class="project-desc">{{ .Description }}</p>
+    <div class="chips">
+      {{- range .Params.stack }}<span class="chip">{{ . }}</span>{{ end -}}
+      {{- with .Params.status }}<span class="chip chip-accent">{{ . }}</span>{{ end -}}
+    </div>
+  </a>
+{{- end }}
+</div>

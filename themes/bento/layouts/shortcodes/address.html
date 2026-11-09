@@ -1,0 +1,10 @@
+{{- with site.Params.imprint -}}
+<address class="addr">
+{{ .name }}<br>
+{{ .street }}<br>
+{{ .city }}{{ with .country }}<br>
+{{ . }}{{ end }}<br><br>
+E-Mail: <a href="mailto:{{ site.Params.email }}">{{ site.Params.email }}</a>{{ with .phone }}<br>
+Tel.: {{ . }}{{ end }}
+</address>
+{{- end -}}

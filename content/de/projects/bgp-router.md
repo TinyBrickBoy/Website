@@ -1,9 +1,10 @@
 ---
 title: "bgp-router"
-weight: 2
+weight: 3
 description: "Weboberfläche für einen BGP-VPS: eigene IPv4/IPv6-Präfixe announcen und IPs per WireGuard an Backends routen."
 stack: ["Go", "BIRD2", "WireGuard"]
 repo: "https://github.com/TinyBrickBoy/router"
+size: "wide"
 ---
 
 Software für einen BGP-VPS. Über eine Weboberfläche announcest du eigene IPv4- und IPv6-Präfixe und legst fest, wohin einzelne IPs oder Subnetze geroutet werden — lokal auf dem VPS oder per WireGuard zu einem Backend, etwa einem Homeserver.

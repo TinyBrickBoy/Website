@@ -1,0 +1,6 @@
+name = "Bento"
+license = "MIT"
+description = "Helles Bento-Grid-Portfolio mit Kacheln, Hell/Dunkel-Modus, Skills, Projekten und Kontakt."
+tags = ["portfolio", "bento", "light", "dark", "deutsch"]
+features = ["Hell/Dunkel-Modus", "Tipp-Effekt", "Projekte aus content/", "Skills aus hugo.toml", "Live-Stats von GitHub und RIPEstat", "Ohne externe Skripte und Schriften"]
+min_version = "0.120.0"

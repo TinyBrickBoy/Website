@@ -1,0 +1,108 @@
+{{ define "main" }}
+{{- $s := site.Params -}}
+{{- $gh := site.Data.stats.github | default $s.stats.github -}}
+{{- $contrib := 0 -}}
+{{- with site.Data.contributions.github }}{{ $contrib = .total }}{{ else }}{{ $contrib = $s.contributionsTotal | default 0 }}{{ end -}}
+{{- $asn := $s.asn -}}
+{{- $asnData := site.Data.stats.asn | default dict -}}
+{{- $prefixes := $asnData.prefixes | default $asn.prefixes -}}
+{{- $v4seen := $asnData.v4seen | default $asn.v4seen -}}
+{{- $v4total := $asnData.v4total | default $asn.v4total -}}
+{{- $rpki := $asn.rpki -}}
+{{- with $asnData.rpki }}{{ with index . (index $prefixes 0) }}{{ $rpki = . }}{{ end }}{{ end -}}
+
+<!-- Start + Über mich -->
+<section id="start" class="bento bento-4 hero-grid">
+  <div class="tile hero c4">
+    <div class="avatar" aria-hidden="true">
+      <div class="avatar-frame"></div>
+      <div class="avatar-face">{{ $s.initials | default "LS" }}</div>
+    </div>
+    <p class="eyebrow">{{ $s.role }}</p>
+    <h1 class="hero-title">{{ $s.fullname | default $s.name }}</h1>
+    {{ with $s.alias }}<p class="mono muted hero-alias">aka {{ . }}</p>{{ end }}
+    {{ with $s.typed }}
+    <p class="typed-line" aria-live="polite"><span id="typed" data-words="{{ . | jsonify }}">{{ index . 0 }}</span><span class="caret" aria-hidden="true"></span></p>
+    {{ end }}
+    {{ with $s.lead }}<p class="lead">{{ . }}</p>{{ end }}
+    <div class="btn-row">
+      <a href="#projects" class="btn btn-dark">{{ i18n "heroProjects" }}</a>
+      <a href="#contact" class="btn btn-soft">{{ i18n "navContact" }}</a>
+    </div>
+  </div>
+
+  <div id="about" class="tile c4 anchor">
+    <p class="label">{{ i18n "navAbout" }}</p>
+    <p class="about-text">{{ $s.about | default $s.description }}</p>
+  </div>
+
+  <a class="tile tile-link" href="https://github.com/{{ $gh.user }}">
+    <p class="label">GitHub</p>
+    <p class="stat">{{ lang.FormatNumber 0 $contrib }}</p>
+    <p class="small">{{ i18n "statContrib" }}</p>
+  </a>
+
+  <a class="tile tile-ink tile-link c2" href="https://bgp.tools/as/{{ $asn.number }}">
+    <p class="label">{{ i18n "asnLabel" }}</p>
+    <p class="asn-num">AS{{ $asn.number }}</p>
+    {{ with $s.asnText }}<p class="ink-text">{{ . }}</p>{{ end }}
+    <p class="asn-meta">
+      {{- range $prefixes }}<span>{{ . }}</span>{{ end -}}
+      {{- with $rpki }}<span>RPKI {{ . }}</span>{{ end -}}
+      {{- if gt (int $v4total) 0 }}<span>{{ $v4seen }}/{{ $v4total }} {{ i18n "asnPeers" }}</span>{{ end -}}
+    </p>
+  </a>
+
+  <a class="tile tile-link" href="https://github.com/{{ $gh.user }}?tab=repositories">
+    <p class="label">Open Source</p>
+    <p class="stat">{{ $gh.repos }}</p>
+    <p class="small">{{ i18n "statRepos" (dict "since" $gh.since) }}</p>
+  </a>
+</section>
+
+<!-- Skills -->
+<section id="skills" class="section anchor">
+  <h2 class="section-title">{{ i18n "navSkills" }}</h2>
+  <div class="bento bento-4">
+    {{ with $s.skillMain }}
+    <div class="tile tile-orange c2 r2 skill-main">
+      <p class="on-orange-muted">{{ .label }}</p>
+      <p class="skill-main-name">{{ .name }}</p>
+      <p class="on-orange-text">{{ .desc }}</p>
+      <div class="skill-main-bar">
+        <div class="bar-head"><span>{{ i18n "experience" }}</span><span class="mono">{{ .level }}%</span></div>
+        <div class="bar bar-light" role="progressbar" aria-label="{{ .name }}" aria-valuenow="{{ .level }}" aria-valuemin="0" aria-valuemax="100"><div class="bar-fill" style="--level: {{ .level }}%"></div></div>
+      </div>
+    </div>
+    {{ end }}
+    {{ range $s.skillbars }}
+    <div class="tile skill{{ if .wide }} c2{{ end }}">
+      <div class="skill-head">
+        <p class="skill-name">{{ .name }}</p>
+        <span class="mono small">{{ .level }}%</span>
+      </div>
+      <p class="small">{{ .desc }}</p>
+      <div class="bar" role="progressbar" aria-label="{{ .name }}" aria-valuenow="{{ .level }}" aria-valuemin="0" aria-valuemax="100"><div class="bar-fill" style="--level: {{ .level }}%"></div></div>
+    </div>
+    {{ end }}
+    {{ with $s.tools }}
+    <div class="tile tile-ink c2">
+      <p class="skill-name">{{ i18n "tools" }}</p>
+      <div class="chips">{{ range . }}<span class="chip chip-ink">{{ . }}</span>{{ end }}</div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+
+<!-- Projekte -->
+<section id="projects" class="section anchor">
+  <h2 class="section-title">{{ i18n "navProjects" }}</h2>
+  {{ partial "projects.html" . }}
+</section>
+
+<!-- Kontakt -->
+<section id="contact" class="section anchor section-last">
+  <h2 class="section-title">{{ i18n "navContact" }}</h2>
+  {{ partial "contact.html" . }}
+</section>
+{{ end }}

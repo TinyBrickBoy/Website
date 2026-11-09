@@ -1,6 +1,6 @@
 ---
 title: "pterodactyl-vps-egg"
-weight: 8
+weight: 7
 description: "Schlankes VPS-Egg für die Gameserver-Panels Pterodactyl und Pelican."
 stack: ["Shell", "Pterodactyl"]
 repo: "https://github.com/TinyBrickBoy/Pterodactyl-VPS-Egg"

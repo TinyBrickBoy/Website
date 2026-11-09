@@ -1,6 +1,6 @@
 ---
 title: "domain-checker-mcp"
-weight: 7
+weight: 4
 description: "Remote MCP server that lets AI assistants check domain availability via the Skrime API."
 stack: ["JavaScript", "MCP"]
 repo: "https://github.com/TinyBrickBoy/Domain-Checker-MCP"

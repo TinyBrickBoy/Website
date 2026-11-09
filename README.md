@@ -1,6 +1,11 @@
 # leo@tinybrickboy
 
-Terminal-Portfolio mit Hugo (Theme „konsole“). Englisch unter `/`, Deutsch unter `/de/`.
+Portfolio mit Hugo im Bento-Design (Theme „bento“). Englisch unter `/`, Deutsch unter `/de/`.
+
+- Texte, Skills und Werkzeuge stehen in `hugo.toml` (je Sprache unter `[languages.<lang>.params]`).
+- Projekte liegen in `content/<lang>/projects/`; die Kachelgröße steuert `size = "big" | "wide" | "full"` im Front Matter.
+- Keine externen Skripte oder Schriften (Outfit und JetBrains Mono liegen in `themes/bento/static/fonts/`), passt also zur strengen CSP.
+- Das alte Terminal-Design ist noch da: in `hugo.toml` `theme = "konsole"` setzen.
 
 ## Stats aktualisieren
 

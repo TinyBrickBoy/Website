@@ -1,0 +1,46 @@
+{{- $s := site.Params -}}
+<div class="bento bento-5">
+  <div class="tile tile-ink c2 contact-card">
+    <div>
+      <p class="contact-title">{{ i18n "contactTitle" }}</p>
+      <p class="ink-muted">{{ i18n "contactText" }}</p>
+    </div>
+    <div class="contact-bottom">
+      {{ with $s.email }}<a href="mailto:{{ . }}" class="contact-mail">{{ . }}</a>{{ end }}
+      <div class="btn-row btn-row-sm">
+        {{ with $s.email }}<button type="button" id="copyBtn" class="btn btn-glass" data-email="{{ . }}" data-done="{{ i18n "copied" }}" data-fail="{{ i18n "copyFailed" }}">{{ i18n "copyMail" }}</button>{{ end }}
+        {{- range where $s.links "primary" true }}
+        <a href="{{ .url }}" class="btn btn-glass">{{ .name | default .label }}</a>
+        {{- end }}
+      </div>
+      <div class="contact-more">
+        {{- range $s.links }}{{ if not .primary }}
+        <a href="{{ .url }}">{{ .name | default .label }}</a>
+        {{- end }}{{ end }}
+      </div>
+    </div>
+  </div>
+
+  <form id="contactForm" class="tile c3 form" novalidate
+        data-email="{{ $s.email }}"
+        data-subject="{{ i18n "formSubject" }}"
+        data-invalid="{{ i18n "formInvalid" }}"
+        data-ok="{{ i18n "formOk" }}">
+    <div class="form-row">
+      <div>
+        <label for="f-name">{{ i18n "formName" }}</label>
+        <input id="f-name" name="name" required autocomplete="name">
+      </div>
+      <div>
+        <label for="f-mail">{{ i18n "formMail" }}</label>
+        <input id="f-mail" name="email" type="email" required autocomplete="email">
+      </div>
+    </div>
+    <div>
+      <label for="f-msg">{{ i18n "formMsg" }}</label>
+      <textarea id="f-msg" name="message" required rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-orange btn-block">{{ i18n "formSend" }}</button>
+    <p id="formNote" class="form-note" role="status" hidden></p>
+  </form>
+</div>
