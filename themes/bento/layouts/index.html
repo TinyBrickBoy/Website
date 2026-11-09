@@ -13,7 +13,7 @@
 
 <!-- Start + Über mich -->
 <section id="start" class="bento bento-4 hero-grid">
-  <div class="tile hero c3">
+  <div class="tile hero c4">
     <p class="eyebrow">{{ $s.role }}</p>
     <h1 class="hero-title">{{ $s.fullname | default $s.name }}</h1>
     {{ with $s.alias }}<p class="mono muted hero-alias">aka {{ . }}</p>{{ end }}
@@ -27,14 +27,11 @@
     </div>
   </div>
 
-  <div class="tile avatar-tile r2" aria-hidden="true">
-    <div class="avatar">
+  <div id="about" class="tile c4 anchor about">
+    <div class="avatar" aria-hidden="true">
       <div class="avatar-frame"></div>
       <div class="avatar-face">{{ $s.initials | default "LS" }}</div>
     </div>
-  </div>
-
-  <div id="about" class="tile c3 anchor">
     <p class="label">{{ i18n "navAbout" }}</p>
     <p class="about-text">{{ $s.about | default $s.description }}</p>
   </div>
